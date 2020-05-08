@@ -16,6 +16,8 @@ class CreateLoanTypesTable extends Migration
         Schema::create('loan_types', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->string('name');
+            $table->decimal('fee', 12, 2);
         });
     }
 
