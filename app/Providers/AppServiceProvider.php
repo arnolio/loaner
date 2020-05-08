@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\AprCalculatorService;
+use App\Services\LoanService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +15,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $loanAprCalculator = new AprCalculatorService();
+        $this->app->bind('App\Services\LoanService', function ($app) use ($loanAprCalculator) {
+            return new LoanService($loanAprCalculator);
+        });
     }
 
     /**
