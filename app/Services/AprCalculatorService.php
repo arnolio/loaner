@@ -17,20 +17,23 @@ class AprCalculatorService implements LoanCalculatorInterface
      * @return float
      * TODO: This calculation is wildly inaccurate
      */
-    public function calculate(Loan $loan): float
-    {
-        //Calculate fee
-        $fees = LoanType::query()->where('id',$loan->type_id)->get()->first()->fee;
-
-        //Calculate interest
-        $totalInterest = $this->calculateTotalInterest($loan);
-
-        $costRatio = ($fees + $totalInterest) / $loan->loan_amount;
+    public function calculate(Loan $loan): float {
+        $costRatio = $this->calculateCostRatio($loan);
 
         return ($costRatio * 365.00 * 100.00) / $loan->term;
     }
 
     private function calculateTotalInterest(Loan $loan): float {
         return ($loan->loan_amount * $loan->rate * $loan->term) / 100.00;
+    }
+
+    private function calculateCostRatio(Loan $loan): float {
+        //Calculate fee
+        $fees = LoanType::query()->where('id', $loan->type_id)->get()->first()->fee;
+
+        //Calculate interest
+        $totalInterest = $this->calculateTotalInterest($loan);
+
+        return ($fees + $totalInterest) / $loan->loan_amount;
     }
 }

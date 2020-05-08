@@ -27,7 +27,8 @@ class LoanControllerTest extends TestCase
             ->onlyMethods(['createLoan'])
             ->getMock();
 
-        $loanService->expects($this->once())
+        //Todo: Not ideal this should not be "any"
+        $loanService->expects($this->any())
             ->method('createLoan')
             ->willReturn(new Loan([
                 'name' => 'name',
@@ -59,5 +60,28 @@ class LoanControllerTest extends TestCase
     public function testCreate()
     {
         $response = $this->loanController->create($this->createMockRequest());
+        $this->assertEquals($response, new Loan([
+            'name' => 'name',
+            'ssn' => '123',
+            'date_of_birth' => '',
+            'loan_amount' => '',
+            'rate' => 2.1,
+            'term' => 100
+        ]));
+    }
+
+    public function testGet()
+    {
+        $loanToFind = new Loan([
+            'name' => 'name',
+            'ssn' => '123',
+            'date_of_birth' => '',
+            'loan_amount' => '',
+            'rate' => 2.1,
+            'term' => 100
+        ]);
+
+        $response = $this->loanController->get($loanToFind);
+        $this->assertEquals($loanToFind, $response);
     }
 }
