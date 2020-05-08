@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-
 use App\Loan;
+use App\LoanType;
 
 /**
  * Class AprCalculatorService
@@ -15,9 +15,22 @@ class AprCalculatorService implements LoanCalculatorInterface
     /**
      * @param Loan $loan
      * @return float
+     * TODO: This calculation is wildly inaccurate
      */
     public function calculate(Loan $loan): float
     {
-        return 0.0;
+        //Calculate fee
+        $fees = LoanType::query()->where('id',$loan->type_id)->get()->first()->fee;
+
+        //Calculate interest
+        $totalInterest = $this->calculateTotalInterest($loan);
+
+        $costRatio = ($fees + $totalInterest) / $loan->loan_amount;
+
+        return ($costRatio * 365.00 * 100.00) / $loan->term;
+    }
+
+    private function calculateTotalInterest(Loan $loan): float {
+        return ($loan->loan_amount * $loan->rate * $loan->term) / 100.00;
     }
 }

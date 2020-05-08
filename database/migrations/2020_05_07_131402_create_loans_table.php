@@ -22,7 +22,7 @@ class CreateLoansTable extends Migration
             $table->decimal('loan_amount', 12, 2);
             $table->decimal('rate', 4,2);
             $table->integer('term');
-            $table->decimal('apr', 4, 2);
+            $table->decimal('apr', 6, 2);
 
             $table->biginteger('type_id')->unsigned();
             $table->foreign('type_id')->references('id')->on('loan_types');
